@@ -1,1 +1,57 @@
+main.tf
+provider "aws" {
+  region = "us-west-2"
+}
+
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "5.0.0"
+
+  name = "innovatemart-vpc"
+  cidr = "10.0.0.0/16"
+  azs             = ["us-west-2a", "us-west-2b"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
+  enable_nat_gateway = true
+  single_nat_gateway = true
+}
+
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "20.0.0"
+
+  cluster_name    = "innovatemart-eks"
+  cluster_version = "1.30"
+  vpc_id          = module.vpc.vpc_id
+  subnet_ids      = module.vpc.private_subnets
+
+  eks_managed_node_groups = {
+    default = {
+      min_size     = 1
+      max_size     = 2
+      desired_size = 1
+      instance_types = ["t3.medium"]
+    }
+  }
+}
+
+resource "aws_iam_user" "dev_user" {
+  name = "dev-readonly"
+}
+
+resource "aws_iam_user_policy" "eks_read" {
+  name  = "eks-read-policy"
+  user  = aws_iam_user.dev_user.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["eks:Describe*", "eks:List*", "logs:Describe*", "logs:Get*"]
+      Resource = "*"
+    }]
+  })
+}
+
+
+Add main.tf for VPC, EKS, and IAM,” and click
 
