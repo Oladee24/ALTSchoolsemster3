@@ -55,3 +55,8 @@ resource "aws_iam_user_policy" "eks_read" {
 
 Add main.tf for VPC, EKS, and IAM,” and click
 
+outputs.tf
+
+output "cluster_endpoint" {
+  value = module.eks.cluster_endpoint
+}
