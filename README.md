@@ -22,4 +22,8 @@ innovativeeksretailstore
   - GitHub repository link.
  
   - Added `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to GitHub Secrets forthe CI/CD.
-    - 
+ 
+- Created `docs/guide.md` with:
+  - Project overview and architecture.
+  - Instructions for app access and developer IAM user.
+  - GitHub repository link.
